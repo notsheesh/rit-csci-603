@@ -18,7 +18,6 @@ author: Shreesh Tripathi, st4083
 
 import sys 
 
-# Helper functions
 # Shift letter by offset
 def _shift_letter(letter: str, offset: int = 1) -> str: 
     letter_ord_base = ord(letter) - ord('A')
@@ -27,21 +26,6 @@ def _shift_letter(letter: str, offset: int = 1) -> str:
     shifted_letter = chr(letter_ord_actual)
     return shifted_letter
 
-# Rotate message once
-def _rotate_once(message: str) -> str:
-    return message[-1] + message[:len(message)-1]
-
-# Duplicate letter once
-def _duplicate_letter(message: str, letter_index: int) -> str: 
-    left_side = message[:letter_index]
-    right_side = message[letter_index+1:]
-    letter = message[letter_index]
-    return left_side + letter + letter + right_side
-
-def _remove_duplicate_letter(message:str, letter_index: int) -> str:
-    return message[:letter_index] + message[letter_index+1:]
-
-# Main operation functions
 # Shift letter in message by offset
 def shift(message: str, letter_index: int, offset: int = 1) -> str:
     letter = message[letter_index]
@@ -51,19 +35,25 @@ def shift(message: str, letter_index: int, offset: int = 1) -> str:
 # Rotate message k times
 def rotate(message: str, k_times: int = 1) -> str:
     for _ in range(k_times % len(message)):
-        message = _rotate_once(message)
+        message = message[-1] + message[:len(message)-1]
     return message
 
 # Duplicate letter k times
 def duplicate(message: str, letter_index: int, k_times: int = 1) -> str: 
     for _ in range(k_times):
-        message = _duplicate_letter(message, letter_index)
+
+        left_side = message[:letter_index]
+        letter = message[letter_index]
+        right_side = message[letter_index+1:]
+
+        message = left_side + letter + letter + right_side
+
     return message
 
 # Remove duplicate letter k times
 def remove_duplicate(message:str, letter_index: int, k_times: int = 1) -> str:
     for _ in range(k_times):
-        message = _remove_duplicate_letter(message, letter_index)
+        message = message[:letter_index] + message[letter_index+1:]
     return message
 
 # Trade letter at index i and j where i < j always
