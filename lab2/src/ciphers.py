@@ -156,21 +156,25 @@ def decrypt(message: str, operations: str) -> str:
     return message
 
 def affine_encrypt(message: str, a: int, b: int) -> str:
-    encrypted_message = ""
+    out_message = ""
     for letter in message:
-        letter_i = ord(letter) - ord('A')
-        encrypted_letter = (a * letter_i + b) % 26
-        encrypted_message += encrypted_letter
-    return encrypted_message
+        out_letter = chr(((a * (ord(letter) - ord('A')) + b) % 26) + ord('A'))
+        out_message += out_letter
+    return out_message
 
+def mod_mul_inv(a):
+    for x in range(26):
+        if a * x % 26 == 1:
+            return x
+    return -1
 
 def affine_decrypt(message: str, a:int, b: int) -> str:
-    decrypted_message = ""
-#    for letter in message: 
-#        letter_i
-    return
-
-# Ciphers main function 
+    out_message = ""
+    for letter in message:
+        out_letter = chr((mod_mul_inv(a) * ((ord(letter) - ord('A')) - b) % 26) + ord('A'))
+        out_message += out_letter
+    return out_message
+# Ciphers main function
 def ciphers() -> None:
     print("Welcome to Ciphers!\n")
 
@@ -220,8 +224,11 @@ def main() -> None:
     :return: None
 
     """
-    ciphers()
+    # ciphers()
+    print(affine_encrypt("STORE", 7, 3))
+    print(affine_decrypt("ZGXSF", 7, 3))
 
- 
+
+
 if __name__ == '__main__':
     main()
