@@ -78,16 +78,8 @@ def trade_ij(message: str, index_i: int, index_j: int) -> str:
     traded_message = left + letter_j + middle + letter_i + right
     return traded_message
 
-def parse(operations: str, option: str) -> dict:
-    operations = operations.split(';')
-    ops_dict = {}
-    for op in operations:
-        ops_dict[op[0]] = op[1:]
-    return normalize(ops_dict, option)
-
-
-def normalize(ops_dict: dict, option: str) -> dict:
-    # convert  Si, Di, R to Sij, Dij, Ri
+def sanitize(ops_dict: dict) -> dict: 
+    # Normalize parameters (R -> R1 and S/Da R/Da,1)
     for op in ops_dict:
         if op == 'S' or op == 'D':
             if not ',' in ops_dict[op]:
@@ -96,20 +88,49 @@ def normalize(ops_dict: dict, option: str) -> dict:
         if op == 'R' and len(ops_dict[op]) == 0:
             ops_dict[op] = '1'
 
-    # convert Xij to X[i,j]
+    # Convert Xij to X[i,j]
     for op in ops_dict:
         if op == 'R':
             ops_dict[op] = int(ops_dict[op])
-        else:
+
+        else: # For S, R, D, T
             params = ops_dict[op].split(',')
-            arg1 = int(params[0])
-            arg2 = int(params[1]) if option == 'E' else int(params[1]) * -1
-            ops_dict[op] = [arg1, arg2]
+            ops_dict[op] = [int(params[0]), int(params[1])]
+    return ops_dict
+
+
+def parse(operations: str, isDecode: bool = False) -> dict:
+    
+    # Seperate all operations 
+    operations = operations.split(';') 
+
+    # Reverse operations if 'decode'
+    if isDecode: 
+        operations.reverse() 
+    
+    # Make dictionary
+    # {OPERATION: 'PARAMS'}
+    ops_dict = {}
+    for op in operations:
+        ops_dict[op[0]] = op[1:]
+
+    ops_dict = sanitize(ops_dict)
+
+    # Mode = Decode, negate frequency parameters
+    if isDecode: 
+        for op in ops_dict:
+            if op == 'S':
+                ops_dict[op] = [ops_dict[op][0], ops_dict[op][1] * -1]
+
+            if op == 'R':
+                ops_dict[op] *= -1
 
     return ops_dict
 
-def process_operations(option: str, message:str, operations: str) -> None:
-    ops_dict = parse(operations, option)
+def encrypt(message: str, operations: str) -> str:
+
+    ops_dict = parse(operations, False)
+
     for op in ops_dict: 
         if op == 'R':
             message = rotate(message, ops_dict[op])
@@ -125,6 +146,39 @@ def process_operations(option: str, message:str, operations: str) -> None:
 
     return message
 
+def decrypt(message: str, operations: str) -> str: 
+
+    ops_dict = parse(operations, True)
+
+    for op in ops_dict:     
+        if op == 'R':
+            message = rotate(message, ops_dict[op])
+
+        if op == 'T':
+            message = trade_ij(message, ops_dict[op][0], ops_dict[op][1])
+
+        if op == 'D':
+            message = duplicate(message, ops_dict[op][0], ops_dict[op][1])
+
+        if op == 'S':
+            message = shift(message, ops_dict[op][0], ops_dict[op][1])
+
+    return message
+
+def affine_encrypt(message: str, a: int, b: int) -> str:
+    encrypted_message = ""
+    for letter in message:
+        letter_i = ord(letter) - ord('A')
+        encrypted_letter = (a * letter_i + b) % 26
+        encrypted_message += encrypted_letter
+    return encrypted_message
+
+
+def affine_decrypt(message: str, a:int, b: int) -> str:
+    decrypted_message = ""
+#    for letter in message: 
+#        letter_i
+    return
 
 # Ciphers main function 
 def ciphers() -> None:
@@ -152,8 +206,12 @@ def ciphers() -> None:
         # Which operation to perform
         operations = input("Enter the encrypting transformation operations: ").upper()
 
-        # Process operations
-        output_message = process_operations(option, message, operations)
+        # Encode or Decode
+        if option == 'E':
+            output_message = encrypt(message, operations)
+        
+        if option == 'D':
+            output_message = decrypt(message, operations)
 
         print("Generating output ...")
 
