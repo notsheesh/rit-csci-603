@@ -24,7 +24,7 @@ author: Shreesh Tripathi, st4083
 
 def _shift_letter(letter: str, offset: int = 1) -> str:
     """
-    Shifts letter a particular letter by a given offset
+    Shifts a particular letter by a given offset
 
     :param letter: The letter to be shifted
     :param offset: The offset by which the letter should be shifted
@@ -48,7 +48,7 @@ def shift(message: str, letter_index: int, offset: int = 1) -> str:
     :param offset: The offset by which the target letter should be shifted
 
     :return out_message: Resulting message after the target letter is shifted 
-                        by offset
+        by offset
     """
 
     letter = message[letter_index]
@@ -82,7 +82,7 @@ def duplicate(message: str, letter_index: int, k_times: int = 1) -> str:
     :param letter_index: Index of the target letter in the message
     :param k_times: The number of times target letter should be duplicated
     :return out_message: Resulting message after the target letter has been 
-                        duplicated
+        duplicated
     """
 
     for _ in range(k_times):
@@ -100,9 +100,11 @@ def duplicate(message: str, letter_index: int, k_times: int = 1) -> str:
 def remove_duplicate(message: str, letter_index: int, k_times: int = 1) -> str:
     """
     Remove instances of letter at a given index in the message, k times
+    
     :param message: The message containing the target letter
     :param letter_index: Index of the target letter in the message
     :param k_times: Number of times the instance of letter should be removed
+
     :return out_message: Result after k instances of letter have been removed
     """
 
@@ -208,11 +210,11 @@ def _sanitize_dictionary(ops_dict: dict) -> dict:
     1. If Shift command is of the form {"S": "i"} then convert to {S: "i,j"} 
         where j = 1
     2. If Duplicate command is of the form {"D": "i"} then convert to 
-        {"D": "i,j"}where j = 1
+        {"D": "i,j"} where j = 1
     3. If Rotate command is of the form {"R": ""} then convert to {"R": "i"} 
         where i = 1
 
-    B. Parse and convert parameters to correct datatype for encryption engine
+    B. Parse and convert parameters to correct data type for encryption engine
     1. If Rotate command then convert {"R": "i"} to {"R" = i}
     2. If Shift, Duplicate, Trade or Affine command then convert {"X": "i,j"} 
         to {"X": [i,j]}
@@ -329,7 +331,7 @@ def decrypt(message: str, operations: str) -> str:
     """
     Performs decryption operations on the message string
 
-    :param message: Message to be encrypted
+    :param message: Message to be decrypted
     :param operations: String of ; separated encryption operations
 
     :return decrypted_message: Decrypted message
@@ -372,18 +374,18 @@ def ciphers_menu() -> None:
 
     while True:
 
-        # Input option
+        # Input mode
         while True:
             prompt = "What do you want to do: (E)ncrypt, (D)ecrypt or (Q)uit? "
-            option = input(prompt).upper()
+            mode = input(prompt).upper()
 
-            if not option in ['E', 'D', 'Q']:
-                print("Please enter a valid option.")
+            if not mode in ['E', 'D', 'Q']:
+                print("Please enter a valid mode.")
             else:
                 break
 
         # Quit session
-        if option == 'Q':
+        if mode == 'Q':
             print("Goodbye!", end="")
             break
 
@@ -397,10 +399,10 @@ def ciphers_menu() -> None:
         # Encode or Decode
         output_message = None
 
-        if option == 'E':
+        if mode == 'E':
             output_message = encrypt(message, operations)
 
-        if option == 'D':
+        if mode == 'D':
             output_message = decrypt(message, operations)
 
         print("Generating output ...")
