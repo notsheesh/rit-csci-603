@@ -100,7 +100,7 @@ def duplicate(message: str, letter_index: int, k_times: int = 1) -> str:
 def remove_duplicate(message: str, letter_index: int, k_times: int = 1) -> str:
     """
     Remove instances of letter at a given index in the message, k times
-
+    
     :param message: The message containing the target letter
     :param letter_index: Index of the target letter in the message
     :param k_times: Number of times the instance of letter should be removed
@@ -147,7 +147,7 @@ def affine_encrypt(message: str, a: int, b: int) -> str:
 
     :return out_message: Encrypted message using affine operation
     """
-
+    
     out_message = ""
     m = 26
 
@@ -203,74 +203,66 @@ def affine_decrypt(message: str, a: int, b: int) -> str:
     return out_message
 
 
-def _sanitize_array(ops_arr: list) -> list:
+def _sanitize_dictionary(ops_dict: dict) -> dict:
     """
-    Sanitize the operations array in the following manner: 
+    Sanitize the operations dictionary in the following manner: 
     A. Normalize forms
-    1. If Shift command is of the form ["S", ["i"]] then convert to 
-        ["S", ["i,j"]] where j = 1
-    2. If Duplicate command is of the form ["D", ["i"]] then convert to 
-        ["D, ["i,j"]] where j = 1
-    3. If Rotate command is of the form ["R", [""]] then convert to
-        ["R", ["i"]] where i = 1
+    1. If Shift command is of the form {"S": "i"} then convert to {S: "i,j"} 
+        where j = 1
+    2. If Duplicate command is of the form {"D": "i"} then convert to 
+        {"D": "i,j"} where j = 1
+    3. If Rotate command is of the form {"R": ""} then convert to {"R": "i"} 
+        where i = 1
 
     B. Parse and convert parameters to correct data type for encryption engine
-    1. If Rotate command then convert ["R", ["i"]] -> ["R", [i]]
-    2. If Shift, Duplicate, Trade or Affine command then convert 
-        ["X", ["i,j"]] -> ["X", [i,j]]
+    1. If Rotate command then convert {"R": "i"} to {"R" = i}
+    2. If Shift, Duplicate, Trade or Affine command then convert {"X": "i,j"} 
+        to {"X": [i,j]}
 
-    :param ops_array: Operations array of the form [operation, [params]] 
+    :param ops_dict: Operations dictionary of the form { operation: "params"} 
         to be sanitized
 
-    :return sanitized_ops_arr: Resulting operations array after 
+    :return sanitized_ops_dict: Resulting operations dictionary after 
         sanitization steps A and B
     """
 
-    # Normalize form
-    # [ "R", [ "" ] ] -> [ "R", [ "1" ] ]
-    # [ "X", [ "i" ] ] -> [ "X", [ "i,1" ] ]
-    for op in ops_arr:
-        command = op[0]
-        parameter_str = op[1][0]
+    # Normalize form (R: '' -> R1 and S/Di R/Di,1)
+    for op in ops_dict:
+        if op == 'S' or op == 'D':
+            if not ',' in ops_dict[op]:
+                ops_dict[op] += ',1'
 
-        if command == 'S' or command == 'D':
-            if not ',' in parameter_str:
-                op[1][0] += ',1'
-
-        if command == 'R' and len(parameter_str) == 0:
-            op[1][0] = '1'
+        if op == 'R' and len(ops_dict[op]) == 0:
+            ops_dict[op] = '1'
 
     # Parse and convert parameters to correct data type
-    for op in ops_arr:
-        command = op[0]
-        parameter_str = op[1][0]
-
-        if command == 'R':  # For Rotate
-            op[1] = [int(op[1][0])]
+    for op in ops_dict:
+        if op == 'R':  # For Rotate
+            ops_dict[op] = int(ops_dict[op])
 
         else:  # For Shift, Duplicate, Trade, Affine
-            params = op[1][0].split(',')
-            op[1] = [int(params[0]), int(params[1])]
+            params = ops_dict[op].split(',')
+            ops_dict[op] = [int(params[0]), int(params[1])]
 
-    sanitized_ops_arr = ops_arr
+    sanitized_ops_dict = ops_dict
 
-    return sanitized_ops_arr
+    return sanitized_ops_dict
 
 
-def _parse_operations(operations: str, isDecodeMode: bool = False) -> list:
+def _parse_operations(operations: str, isDecodeMode: bool = False) -> dict:
     """
-    Parse the commands string to generate an operations array
+    Parse the commands string to generate an operations dictionary
     1. Separate all commands against the ";" delimiter
     2. Reverse the order of commands if mode == decode
-    3. Convert the list of commands to an operations array
-    4. Sanitize the operations array for the encryption/decryption engine
+    3. Convert the list of commands to an operations dictionary
+    4. Sanitize the operations dictionary for the encryption/decryption engine
     5. Invert the operations parameters if mode == decode
 
     :param operations: String of ; delimited operations
     :param isDecodeMode: Boolean variable which indicates if the mode is set to 
         decode or encode
 
-    :return ops_arr: Resulting operations array after parsing the 
+    :return ops_dict: Resulting operations dictionary after parsing the 
         operations string
     """
 
@@ -281,28 +273,24 @@ def _parse_operations(operations: str, isDecodeMode: bool = False) -> list:
     if isDecodeMode:
         operations.reverse()
 
-    # Make array of operations
-    ops_arr = []
+    # Make dictionary of the form {"operation": "params"}
+    ops_dict = {}
     for op in operations:
-        command = op[0]
-        parameters = op[1:]
-        ops_arr.append([command, [parameters]])
+        ops_dict[op[0]] = op[1:]
 
-    # Sanitize operations array
-    ops_arr = _sanitize_array(ops_arr)
+    # Sanitize operations dictionary
+    ops_dict = _sanitize_dictionary(ops_dict)
 
     # Invert the operations parameters if mode == decode
     if isDecodeMode:
-        for op in ops_arr:
-            if op[0] == 'S':
-                op[1] = [op[1][0], op[1][1] * -1]
+        for op in ops_dict:
+            if op == 'S':
+                ops_dict[op] = [ops_dict[op][0], ops_dict[op][1] * -1]
 
-            if op[0] == 'R':
-                op[1][0] = op[1][0] * -1
+            if op == 'R':
+                ops_dict[op] *= -1
 
-    # print("\n\nOperations: {}\n\n".format(ops_arr))
-
-    return ops_arr
+    return ops_dict
 
 
 def encrypt(message: str, operations: str) -> str:
@@ -315,34 +303,25 @@ def encrypt(message: str, operations: str) -> str:
     :return encrypt_message: Encrypted message
     """
 
-    # Convert operations string to operations array
-    ops_arr = _parse_operations(operations, False)
-    progress = []
+    # Convert operations string to operations dictionary
+    ops_dict = _parse_operations(operations, False)
 
-    for op in ops_arr:
-        command = op[0]
-        params = op[1]
-        if command == 'R':  # Rotate
-            message = rotate(message, params[0])
-            progress.append(message)
+    for op in ops_dict:
+        if op == 'R':  # Rotate
+            message = rotate(message, ops_dict[op])
 
-        if command == 'T':  # Trade
-            message = trade_ij(message, params[0], params[1])
-            progress.append(message)
+        if op == 'T':  # Trade
+            message = trade_ij(message, ops_dict[op][0], ops_dict[op][1])
 
-        if command == 'D':  # Duplicate
-            message = duplicate(message, params[0], params[1])
-            progress.append(message)
+        if op == 'D':  # Duplicate
+            message = duplicate(message, ops_dict[op][0], ops_dict[op][1])
 
-        if command == 'S':  # Shift
-            message = shift(message, params[0], params[1])
-            progress.append(message)
+        if op == 'S':  # Shift
+            message = shift(message, ops_dict[op][0], ops_dict[op][1])
 
-        if command == 'A':  # Affine
-            message = affine_encrypt(message, params[0], params[1])
-            progress.append(message)
+        if op == 'A':  # Affine
+            message = affine_encrypt(message, ops_dict[op][0], ops_dict[op][1])
 
-    # print("Encryption: ", progress)
     encrypt_message = message
 
     return encrypt_message
@@ -358,32 +337,27 @@ def decrypt(message: str, operations: str) -> str:
     :return decrypted_message: Decrypted message
     """
 
-    # Convert operations string to operations array
-    ops_arr = _parse_operations(operations, True)
-    progress = []
+    # Convert operations string to operations dictionary
+    ops_dict = _parse_operations(operations, True)
 
-    for op in ops_arr:
-        if op[0] == 'R':  # Rotate
-            message = rotate(message, op[1][0])
-            progress.append(message)
+    for op in ops_dict:
+        if op == 'R':  # Rotate
+            message = rotate(message, ops_dict[op])
 
-        if op[0] == 'T':  # Trade
-            message = trade_ij(message, op[1][0], op[1][1])
-            progress.append(message)
+        if op == 'T':  # Trade
+            message = trade_ij(message, ops_dict[op][0], ops_dict[op][1])
 
-        if op[0] == 'D':  # Duplicate
-            message = remove_duplicate(message, op[1][0], op[1][1])
-            progress.append(message)
+        if op == 'D':  # Duplicate
+            message = remove_duplicate(
+                message, ops_dict[op][0], ops_dict[op][1]
+            )
 
-        if op[0] == 'S':  # Shift
-            message = shift(message, op[1][0], op[1][1])
-            progress.append(message)
+        if op == 'S':  # Shift
+            message = shift(message, ops_dict[op][0], ops_dict[op][1])
 
-        if op[0] == 'A':  # Affine
-            message = affine_decrypt(message, op[1][0], op[1][1])
-            progress.append(message)
+        if op == 'A':  # Affine
+            message = affine_decrypt(message, ops_dict[op][0], ops_dict[op][1])
 
-    # print("Decrypt: ", progress)
     decrypted_message = message
     return decrypted_message
 
@@ -443,6 +417,7 @@ def main() -> None:
 
     :return: None
     """
+
     ciphers_menu()
 
 
