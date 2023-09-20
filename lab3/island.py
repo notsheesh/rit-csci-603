@@ -13,6 +13,8 @@ import sys
 import re
 
 ttl = None  # turtle object
+IS_TRACER_ON = True # for quick print
+
 # Patterns for input validation
 POS_INT = r'^[1-9]\d*$'
 NEG_INT = r'^-\d+$'
@@ -76,10 +78,10 @@ def draw_fractal_curve_2 (
     else:
         ttl.left ( 45 ) 
         perimeter = draw_fractal_curve_2 ( 
-            length / 2 / math.cos ( math.pi / 4 ) , level - 1, perimeter ) 
+            length / 2 / math.cos ( math.pi / 4 ), level - 1, perimeter ) 
         ttl.right ( 90 ) 
         perimeter = draw_fractal_curve_2 ( 
-            length / 2 / math.cos ( math.pi / 4 ) , level - 1, perimeter ) 
+            length / 2 / math.cos ( math.pi / 4 ), level - 1, perimeter ) 
         ttl.left ( 45 ) 
 
     return perimeter
@@ -94,9 +96,9 @@ def draw_island_1 (
 
     :param num_sides: Number of sides in the island.
     :param side_length: Length of the initial side.
-    :param num_levels: umber of recursion levels.
+    :param num_levels: Number of recursion levels.
 
-    :return: The total perimeter of the island.
+    :return: Total perimeter of the island.
     """
     perimeter = 0
     for _ in range ( num_sides ) :
@@ -114,9 +116,9 @@ def draw_island_2 (
 
     :param num_sides: Number of sides in the island.
     :param side_length: Length of the initial side.
-    :param num_levels: umber of recursion levels.
+    :param num_levels: Number of recursion levels.
 
-    :return: The total perimeter of the island.
+    :return: Total perimeter of the island.
     """
     perimeter = 0
     for _ in range ( num_sides ) :
@@ -129,7 +131,7 @@ def which_type ( input_val: str ) -> str :
     """
     Determines the data type of an input value using regular expressions.
 
-    :param input_val: The input value to be checked.
+    :param input_val: Input value to be checked.
 
     :return: A string representing the data type of the input value.
     """
@@ -160,7 +162,7 @@ def is_pos_float ( input_val: str ) -> bool:
     """
     Checks if an input value is a positive float.
 
-    :param input_val: The input value to be checked.
+    :param input_val: Input value to be checked.
 
     :return: True if the input is a positive float, False otherwise.
     """
@@ -177,7 +179,7 @@ def is_pos_int ( input_val: str ) -> bool:
     """
     Checks if an input value is a positive integer.
 
-    :param input_val: The input value to be checked.
+    :param input_val: Input value to be checked.
 
     :return: True if the input is a positive integer, False otherwise.
     """
@@ -256,6 +258,7 @@ def main() :
     Driver function for taking user input and drawing of fractal curve islands.
     """
     global ttl
+    global IS_TRACER_ON
 
     # Take user input
     num_sides, side_length, num_levels = take_user_input() 
@@ -266,9 +269,11 @@ def main() :
     turtle.Screen().setup( width=1.0, height=1.0 ) 
 
     # Draw island 1
-    # turtle.tracer ( 0, 0 )
+    if IS_TRACER_ON:
+        turtle.tracer ( 0, 0 )
     island_1_perimeter = draw_island_1 ( num_sides, side_length, num_levels ) 
-    # turtle.update() 
+    if IS_TRACER_ON:
+        turtle.update()
     print ( "Curve 1 - Island’s length is "
             "{} units.".format ( island_1_perimeter ) ) 
 
@@ -277,9 +282,11 @@ def main() :
     ttl.reset() 
 
     # Draw island 2
-    # turtle.tracer ( 0, 0 )
+    if IS_TRACER_ON:
+        turtle.tracer ( 0, 0 )
     island_2_perimeter = draw_island_2 ( num_sides, side_length, num_levels ) 
-    # turtle.update() 
+    if IS_TRACER_ON:
+        turtle.update()
     print ( "Curve 2 - Island’s length is "
             "{} units.".format ( island_2_perimeter ) ) 
 
