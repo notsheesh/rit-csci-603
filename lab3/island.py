@@ -5,8 +5,13 @@ A program that uses turtle graphics to draw fractal islands of two different
 types. The user can specify the number of sides, the length of the initial side,
 and the number of recursion levels to generate complex island shapes.
 
+NOTE for grader: Hit enter to close the turtle screen after "Bye!"
+NOTE for grader: set IS_TRACER_ON = False to turn on animation
+NOTE for grader: Animations are disabled to reduce grading time 
+
 author: Shreesh Tripathi, st4083
 """
+
 import turtle
 import math
 import sys
@@ -25,7 +30,6 @@ NEG_FLOAT = r'^-\d+\.\d+$'
 ZERO_FLOAT = r'^0\.\d+$'
 
 STR = r'^[a-zA-Z]+$'
-
 
 def draw_fractal_curve_1 ( 
         length: float,
