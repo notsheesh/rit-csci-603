@@ -196,7 +196,7 @@ def take_user_input_num_sides() -> int:
 
     :return: User-provided number of sides as an integer.
     """
-    if len ( sys.argv )  1:
+    if len ( sys.argv ) > 1:
         return int ( sys.argv[ 1 ] ) 
 
     while True:
@@ -213,7 +213,7 @@ def take_user_input_side_length() -> float :
 
     :return: User-provided length as a float.
     """
-    if len ( sys.argv )  1:
+    if len ( sys.argv ) > 1:
         return float ( sys.argv[ 2 ] ) 
 
     while True:
@@ -230,7 +230,7 @@ def take_user_input_num_levels() -> int:
 
     :return: User-provided number of levels as an integer.
     """
-    if len ( sys.argv )  1:
+    if len ( sys.argv ) > 1:
         return int ( sys.argv[ 3 ] ) 
 
     while True:
