@@ -1,23 +1,26 @@
 import turtle
 import math
 import sys 
+import re
 
-def draw_fractal_curve_2(length, level, perimeter=0):
-    if level == 1:
-        ttl.forward(length)
-        perimeter += length
-        return perimeter
-    else:
-        ttl.left(45)
-        perimeter = draw_fractal_curve_2(
-            length/2/math.cos(math.pi/4), level - 1, perimeter)
-        ttl.right(90)
-        perimeter = draw_fractal_curve_2(
-            length/2/math.cos(math.pi/4), level - 1, perimeter)
-        ttl.left(45)
-    return perimeter
+ttl = None # turtle object
+# Patterns for input validation
+POS_INT = r'^[1-9]\d*$' 
+NEG_INT = r'^-\d+$'
+ZERO_INT = r'^0$'
 
-def draw_fractal_curve_1(length, level, perimeter=0):
+POS_FLOAT = r'^[1-9]\d*\.\d+$'
+NEG_FLOAT = r'^-\d+\.\d+$'
+ZERO_FLOAT = r'^0\.\d+$'
+
+STR = r'^[a-zA-Z]+$'
+
+
+def draw_fractal_curve_1(
+    length: float, 
+    level: int, 
+    perimeter: float = 0) -> float:
+
     if level == 1:
         ttl.forward(length)
         perimeter += length
@@ -30,104 +33,137 @@ def draw_fractal_curve_1(length, level, perimeter=0):
         perimeter = draw_fractal_curve_1(length / 3, level - 1, perimeter)
         ttl.left(60)
         perimeter = draw_fractal_curve_1(length / 3, level - 1, perimeter)
+
     return perimeter
 
-# pre condition
-def pre_condition1(length):
-    ttl.penup()
-    ttl.backward(length/2)
-    ttl.right(90)
-    ttl.forward(100)
-    ttl.left(90)
-    ttl.pendown()
+def draw_fractal_curve_2(
+    length: float, 
+    level: int, 
+    perimeter: float = 0) -> float:
 
-def pre_condition2():
-    ttl.penup()
-    ttl.backward(300)
-    # ttl.right(90)
-    # ttl.forward(200)
-    # ttl.left(90)
-    ttl.pendown()
+    if level == 1:
+        ttl.forward(length)
+        perimeter += length
+        return perimeter
+    else:
+        ttl.left(45)
+        perimeter = draw_fractal_curve_2(
+            length/2/math.cos(math.pi/4), level - 1, perimeter)
+        ttl.right(90)
+        perimeter = draw_fractal_curve_2(
+            length/2/math.cos(math.pi/4), level - 1, perimeter)
+        ttl.left(45)
 
-length = 100
-level = 6
-num_sides = 8
+    return perimeter
 
-def draw_island_1(num_sides, side_length, num_levels):
+def draw_island_1(num_sides: int, side_length: float, num_levels: int) -> float:
     perimeter = 0
     for _ in range(num_sides):
         perimeter += draw_fractal_curve_1(side_length, num_levels)
         ttl.left(360/num_sides)
     return perimeter
 
-def draw_island_2(num_sides, side_length, num_levels):
+def draw_island_2(num_sides: int, side_length: float, num_levels: int) -> float:
     perimeter = 0
     for _ in range(num_sides):
         perimeter += draw_fractal_curve_2(side_length, num_levels)
         ttl.left(360/num_sides)
     return perimeter
 
-def take_user_input_num_sides():
-    # number of sides
+def which_type(input_val: str) -> str:
+    if re.fullmatch(POS_INT, input_val):
+        return "positive integer-value"
+    # Not required, only for completeness
+    if re.fullmatch(NEG_INT, input_val):
+        return "negative integer-value" 
+    # Not required, only for completeness
+    if re.fullmatch(ZERO_INT, input_val):
+        return "zero integer-value" 
+    if re.fullmatch(POS_FLOAT, input_val):
+        return "positive float-value" 
+    # Not required, only for completeness
+    if re.fullmatch(NEG_FLOAT, input_val):
+        return "negative float-value" 
+    # Not required, only for completeness
+    if re.fullmatch(ZERO_FLOAT, input_val):
+        return "zero float-value" 
+    if re.fullmatch(STR, input_val):
+        return "string-value"
+    # Not required, only for completeness
+    else:
+        return "unknown value" 
+
+
+def is_pos_float(input_val: str) -> bool:
+    if re.fullmatch(POS_FLOAT, input_val):
+        return True
+    else:
+        data_type = which_type(input_val)
+        print("Value must be a positive float."
+              " You entered a '{}'".format(data_type))
+        return False
+
+def is_pos_int(input_val: str) -> bool:
+    if re.fullmatch(POS_INT, input_val):
+        return True
+    else:
+        data_type = which_type(input_val)
+        print("Value must be a positive integer."
+              " You entered a '{}'".format(data_type))
+        return False
+
+def take_user_input_num_sides() -> int:
     if len(sys.argv) > 1:
         return int(sys.argv[1])
 
     while True:
-        try:
-            num_sides = int(input("Number of sides: "))
-        except ValueError:
-            print("Invalid input. Enter a positive integer")
+        num_sides = input("Number of sides: ")
+        if is_pos_int(num_sides):
+            return int(num_sides)
         else:
-            if num_sides > 0:
-                return num_sides
-            else:
-                print("Invalid input. Enter a positive integer")
+            continue
 
-def take_user_input_side_length():
-    # side of length
+def take_user_input_side_length() -> float:
     if len(sys.argv) > 1:
         return float(sys.argv[2])
-
+    
     while True:
-        try:
-            side_length = float(input("Length of initial side: "))
-        except ValueError:
-            print("Invalid input. Enter a positive integer")
+        side_length = input("Length of initial side: ")
+        if is_pos_float(side_length):
+            return float(side_length)
         else:
-            if side_length > 0:
-                return side_length
-            else:
-                print("Invalid input. Enter a positive integer")
+            continue
 
-def take_user_input_num_levels():
-    # side of length
+def take_user_input_num_levels() -> int:
     if len(sys.argv) > 1:
         return int(sys.argv[3])
 
     while True:
-        try:
-            num_levels = int(input("Number of levels: "))
-        except ValueError:
-            print("Invalid input. Enter a positive integer")
+        num_levels = input("Number of levels: ")
+        if is_pos_int(num_levels):
+            return int(num_levels)
         else:
-            if num_levels > 0:
-                return num_levels
-            else:
-                print("Invalid input. Enter a positive integer")
+            continue
 
-def main():
-
+def take_user_input():
     num_sides = take_user_input_num_sides()
     side_length = take_user_input_side_length()
     num_levels = take_user_input_num_levels()
+    return num_sides, side_length, num_levels
 
+def main():
+    global ttl
+
+    # Take user input
+    num_sides, side_length, num_levels = take_user_input()
 
     # Setup turtle screen
     ttl = turtle.Turtle()
-    ttl.speed(0)
+    # ttl.speed(0)
     turtle.Screen().setup(width=1.0, height=1.0)
-    turtle.tracer(0,0)
+
     # Draw island 1
+    turtle.tracer(0,0)
     island_1_perimeter = draw_island_1(num_sides, side_length, num_levels)
     turtle.update()
     print("Curve 1 - Island’s length is {} units.".format(island_1_perimeter))
@@ -135,14 +171,20 @@ def main():
     # Wait for user input and reset
     input("Hit enter to continue...")
     ttl.reset()
-    turtle.tracer(0,0)
+
+
     # Draw island 2
+    turtle.tracer(0,0)
     island_2_perimeter = draw_island_2(num_sides, side_length, num_levels)
     print("Curve 2 - Island’s length is {} units.".format(island_2_perimeter))
     turtle.update()
+    
     # End
     print("Bye!")
-    turtle.exitonclick()
+    
+    # Hit enter to close turtle screen
+    input()
+    turtle.bye()
     
 if __name__ == '__main__':
     main()
