@@ -199,7 +199,8 @@ def new_game(secret_word: SecretWord, word_list: WordList) -> tuple:
 
     :param secret_word: The secret word object.
     :param word_list: The word list object.
-    :return: A tuple containing the updated secret word, word list, and user attempts.
+    :return: A tuple containing the updated secret word, word list, and user 
+    attempts.
     """
     if secret_word.string_value in word_list.storage:
         word_list.mark_word_done(secret_word.string_value)
