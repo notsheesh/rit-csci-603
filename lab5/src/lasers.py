@@ -4,7 +4,7 @@ import re
 
 DEBUG = False
 
-def read_file(file_name: str) -> list[list[int]]:
+def read_file(file_name: str) -> list[list]:
     grid = []
     path = '../data'
     file_path = os.path.join(path, file_name)
@@ -24,7 +24,7 @@ def print_grid(grid: list[list]) -> None:
             print(cell, end=' ')
         print()
 
-def get_grid() -> list[list[int]]: 
+def get_grid() -> list[list]: 
     if len(sys.argv) == 2:
         grid = read_file(sys.argv[1])
     elif len(sys.argv) == 3:
@@ -55,7 +55,7 @@ def get_num_lasers(max_num: int) -> int:
             break
     return num_lasers
 
-def is_valid_index(grid: list[list[int]], index) -> bool: 
+def is_valid_index(grid: list[list], index) -> bool: 
     row_index = index[0]
     col_index = index[1]
     if row_index in range(0, len(grid)):
@@ -69,7 +69,7 @@ def is_valid_placement(grid, indices):
             return False
     return True
 
-def get_indices(direction: str, index: tuple[int]):
+def get_indices(direction: str, index: tuple):
     row_index = index[0]
     col_index = index[1]
 
@@ -94,51 +94,95 @@ def is_valid_direction(direction, grid, index):
         return True
     return False
 
-# delete comments here
-def get_direction_sum(direction, grid: list[list[int]],  index: tuple[int]):
+def get_direction_sum(direction, grid: list[list],  index: tuple):
     indices = get_indices(direction, index)
     sum = 0
-
-    # print("index: {} | direction: {}".format(index, direction))
     for idx in indices: 
-        # print("Index: {} | Value: {}".format(idx, grid[idx[0]][idx[1]]))
         sum += grid[idx[0]][idx[1]]
-    # print("sum: {}".format(sum))
-    # print("##################")
     return sum
 
-def make_index_dict(grid, index):
-    index_dict = {
-            'max_dir': '',
-            'max_sum': -1
-        }
-
+def get_index_max_sum(grid, index):
+    max_sum = -1
+    max_direction = ''
     for direction in ['N', 'S', 'W', 'E']:
         if is_valid_direction(direction, grid, index):
             direction_sum = get_direction_sum(direction, grid, index)
-            if direction_sum > index_dict['max_sum']:
-                index_dict['max_dir'] = direction
-                index_dict['max_sum'] = direction_sum
-    
-    return index_dict
+            if direction_sum > max_sum:
+                max_direction = direction
+                max_sum = direction_sum
+    return max_sum, max_direction
 
-def make_grid_dict(grid: list[list[int]]) -> dict:
-    grid_dict = {}
+def make_sum_dict(grid: list[list]) -> dict:
+    sum_dict = {}
     for i in range(len(grid)):
         for j in range(len(grid[0])):
             index = (i, j)
-            index_dict = make_index_dict(grid, index)
-            if index_dict['max_sum'] != -1:
-                grid_dict[index] = index_dict
-    return grid_dict
+            max_sum, max_direction = get_index_max_sum(grid, index)
+            if max_sum != -1: 
+                sum_dict[max_sum] = {
+                    'index': index, 
+                    'direction': max_direction
+                }
+    return sum_dict
+
+def merge(left_lst: list, right_lst: list):
+    merged_lst = []
+    left, right = 0, 0
+    while left < len(left_lst) and right < len(right_lst):
+        if left_lst[left] < right_lst[right]: 
+            merged_lst.append(left_lst[left])
+            left += 1
+        else: 
+            merged_lst.append(right_lst[right])
+            right += 1
+
+    while left < len(left_lst):
+        merged_lst.append(left_lst[left])    
+        left += 1
+    
+    while right < len(right_lst):
+        merged_lst.append(right_lst[right])    
+        right += 1
+    
+    return merged_lst
+
+def merge_sort(lst: list):
+    if len(lst) < 2: 
+        return lst
+
+    left_lst, right_lst = lst[:len(lst)//2], lst[len(lst)//2:]
+    return merge(merge_sort(left_lst), merge_sort(right_lst))
+
+def print_dict(dictionary):
+    for key in dictionary:
+        print(key, dictionary[key])
+
+def print_optimal_placement(top_sums: list, sum_dict: dict):
+    print("Optimal placement: ")
+    for sum in top_sums:
+        print("loc: {}, facing: {}, sum: {}".format(
+            sum_dict[sum]['index'], sum_dict[sum]['direction'], sum 
+        ))
+    print("Total Sum: {}".format(sum(top_sums)))
 
 def main():
     grid = get_grid()
     print_grid(grid)
-    max_num_lasers = len(grid) * len(grid[0]) - 4
-    num_lasers = get_num_lasers(max_num_lasers)
-    grid_dict = make_grid_dict(grid)
-    # sum_dict = make_sum_dict(grid_dict)
+    # Get user input 
+    num_lasers = get_num_lasers(len(grid) * len(grid[0]) - 4)
+    # Calculate all sums
+    sum_dict = make_sum_dict(grid)
+    # Sort sums 
+    sum_list = list(sum_dict.keys())
+    sorted_sum_list = merge_sort(sum_list)
+    # Find top k 
+    top_k_sums = []
+    print(sorted_sum_list)
+    for i in range(num_lasers-num_repeat):
+        top_k_sums.append(sorted_sum_list[::-1][i])
+    print(top_k_sums)
+
+
 
 if __name__ == '__main__':
     main()
