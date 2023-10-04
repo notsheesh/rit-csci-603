@@ -103,27 +103,24 @@ def get_direction_sum(direction, grid: list[list],  index: tuple):
 
 def get_index_max_sum(grid, index):
     max_sum = -1
-    max_direction = ''
+    direction = ''
     for direction in ['N', 'S', 'W', 'E']:
         if is_valid_direction(direction, grid, index):
             direction_sum = get_direction_sum(direction, grid, index)
             if direction_sum > max_sum:
-                max_direction = direction
+                direction = direction
                 max_sum = direction_sum
-    return max_sum, max_direction
+    return max_sum, direction
 
-def make_sum_dict(grid: list[list]) -> dict:
-    sum_dict = {}
+def make_sums_list(grid: list[list]) -> dict:
+    sums_list = []
     for i in range(len(grid)):
         for j in range(len(grid[0])):
             index = (i, j)
-            max_sum, max_direction = get_index_max_sum(grid, index)
+            max_sum, direction = get_index_max_sum(grid, index)
             if max_sum != -1: 
-                sum_dict[max_sum] = {
-                    'index': index, 
-                    'direction': max_direction
-                }
-    return sum_dict
+                sums_list.append([max_sum, index, direction])
+    return sums_list
 
 def merge(left_lst: list, right_lst: list):
     merged_lst = []
@@ -153,17 +150,26 @@ def merge_sort(lst: list):
     left_lst, right_lst = lst[:len(lst)//2], lst[len(lst)//2:]
     return merge(merge_sort(left_lst), merge_sort(right_lst))
 
-def print_dict(dictionary):
-    for key in dictionary:
-        print(key, dictionary[key])
-
-def print_optimal_placement(top_sums: list, sum_dict: dict):
+def print_optimal_placement(sums_top_k, total_sum_k):
     print("Optimal placement: ")
-    for sum in top_sums:
+    for element in sums_top_k:
         print("loc: {}, facing: {}, sum: {}".format(
-            sum_dict[sum]['index'], sum_dict[sum]['direction'], sum 
+            element[1], element[2], element[0]
         ))
-    print("Total Sum: {}".format(sum(top_sums)))
+    print("Total Sum: {}".format(total_sum_k))
+
+def get_triplet(max_sum, sums_list):
+    for element in sums_list:
+        if max_sum == element[0]:
+            return element[0], element[1], element[2]
+
+def get_sums_top_k(sums_sorted, num_lasers, sums_list):
+    sums_top_k = []
+    for i in range(num_lasers):
+        triplet = list(get_triplet(sums_sorted[i], sums_list))
+        sums_list.remove(triplet) 
+        sums_top_k.append(triplet)
+    return sums_top_k
 
 def main():
     grid = get_grid()
@@ -171,18 +177,13 @@ def main():
     # Get user input 
     num_lasers = get_num_lasers(len(grid) * len(grid[0]) - 4)
     # Calculate all sums
-    sum_dict = make_sum_dict(grid)
+    sums_list = make_sums_list(grid)
     # Sort sums 
-    sum_list = list(sum_dict.keys())
-    sorted_sum_list = merge_sort(sum_list)
-    # Find top k 
-    top_k_sums = []
-    print(sorted_sum_list)
-    for i in range(num_lasers-num_repeat):
-        top_k_sums.append(sorted_sum_list[::-1][i])
-    print(top_k_sums)
-
-
+    sums_sorted = merge_sort([element[0] for element in sums_list])[::-1]
+    # Get top k 
+    sums_top_k = get_sums_top_k(sums_sorted, num_lasers, sums_list)
+    total_sum_k = sum(sums_sorted[:num_lasers])
+    print_optimal_placement(sums_top_k, total_sum_k)
 
 if __name__ == '__main__':
     main()
