@@ -15,7 +15,6 @@ def read_file(file_name: str) -> list[list]:
         print("Loaded: {}".format(file_name))
     except IOError:
         print("Couldn't open file {} successfuly".format(file_name))
-    
     return grid
 
 def print_grid(grid: list[list]) -> None: 
@@ -23,7 +22,8 @@ def print_grid(grid: list[list]) -> None:
         for cell in grid_line:
             print(cell, end=' ')
         print()
-if __name__ == '__main__':
+
+def get_grid() -> None: 
     if len(sys.argv) == 2:
         grid = read_file(sys.argv[1])
     elif len(sys.argv) == 3:
@@ -34,8 +34,17 @@ if __name__ == '__main__':
             print("Invalid debug param")
     else:
         print("Enter a valid file name")
-    
+
+    return grid
+
+def main():
+    grid = get_grid()
     print_grid(grid)
+    
+if __name__ == '__main__':
+    main()
+
+    
 
 
 
