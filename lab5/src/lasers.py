@@ -220,7 +220,7 @@ def get_index_max_sum(grid: list[list], index: tuple):
     """
     max_sum = -1
     max_direction = ''
-    for direction in ['N', 'S', 'W', 'E']:
+    for direction in ['N', 'E', 'S', 'W']:
         if is_valid_laser_direction(direction, grid, index):
             direction_sum = get_direction_sum(direction, grid, index)
             if direction_sum > max_sum:
@@ -297,8 +297,8 @@ def print_optimal_placement(sums_top_k: list, total_sum_k: int) -> None:
     """
     print("Optimal placement: ")
     for element in sums_top_k:
-        print("loc: {}, facing: {}, sum: {}".format(
-            element[1], element[2], element[0]
+        print("loc: ({},{}), facing: {}, sum: {}".format(
+            element[1][0], element[1][1], element[2], element[0]
         ))
     print("Total Sum: {}".format(total_sum_k))
 
