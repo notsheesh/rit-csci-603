@@ -38,17 +38,24 @@ def is_valid_value(value: int, max_value: int) -> bool:
     else:
         print("Enter a valid positive integer.")
 
-def get_num_lasers(num_cells: int) -> int: 
-    num_max = num_cells - 4
+def get_num_lasers(num_cells: int, DEBUG = False) -> int: 
+    max_num = num_cells - 4
+    if DEBUG:
+        print("Num cells: {}".format(num_cells))
+        print("Max value: {}".format(max_num))
     num_lasers = -1
     while True:
         num_lasers = input("Enter number of lasers: ").strip()
         if is_valid_value(num_lasers, max_num):
             num_lasers = int(num_lasers)            
+            if DEBUG:
+                print("Good input: {}".format(num_lasers))
+                continue
             break
+            
     return num_lasers
 
-def is_valid_beam_position(grid: list[list], index) -> bool: 
+def is_valid_index(grid: list[list], index) -> bool: 
     row_index = index[0]
     col_index = index[1]
     if row_index in range(0, len(grid)):
@@ -56,10 +63,9 @@ def is_valid_beam_position(grid: list[list], index) -> bool:
             return True
     return False
 
-# laser is made of 3 beams, check if each beam is in valid position
-def is_valid_laser_placement(grid, indices):
+def is_valid_placement(grid, indices):
     for index in indices:
-        if not is_valid_beam_position(grid, index):
+        if not is_valid_index(grid, index):
             return False
     return True
 
@@ -82,9 +88,9 @@ def get_indices(direction: str, index: tuple):
         return (D, R, U) # v > ^
 
 
-def is_valid_laser_direction(direction, grid, index):
+def is_valid_direction(direction, grid, index):
     indices = get_indices(direction, index)
-    if is_valid_laser_placement(grid, indices):
+    if is_valid_placement(grid, indices):
         return True
     return False
 
@@ -95,22 +101,26 @@ def get_direction_sum(direction, grid: list[list],  index: tuple):
         sum += grid[idx[0]][idx[1]]
     return sum
 
-def get_index_max_sum(grid, index):
+def get_index_max_sum(grid, index, DEBUG = True):
     max_sum = -1
     direction = ''
     for direction in ['N', 'S', 'W', 'E']:
-        if is_valid_laser_direction(direction, grid, index):
+        print("Checking direction {}".format(direction))
+        if is_valid_direction(direction, grid, index):
+
             direction_sum = get_direction_sum(direction, grid, index)
             if direction_sum > max_sum:
                 direction = direction
                 max_sum = direction_sum
     return max_sum, direction
 
-def make_sums_list(grid: list[list]) -> dict:
+def make_sums_list(grid: list[list], DEBUG = True) -> dict:
     sums_list = []
     for i in range(len(grid)):
         for j in range(len(grid[0])):
             index = (i, j)
+            if DEBUG: 
+                print("At index {}".format(index))
             max_sum, direction = get_index_max_sum(grid, index)
             if max_sum != -1: 
                 sums_list.append([max_sum, index, direction])
