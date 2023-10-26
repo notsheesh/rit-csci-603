@@ -16,7 +16,7 @@ as well as the passenger data file as a command-line argument.
 Author: Shreesh Tripathi, st4083
 """
 from simulation import Simulation
-from utils.helper import get_data, get_capacity
+from utils.helper import get_data, get_capacity, parse_args
 from utils.airport import Airport
 from sys import argv as console_args
 
@@ -26,6 +26,9 @@ def main():
     and running the AiRIT's simulation.
     :return: None
     """
+    # Parse cmd line args 
+    file_name = parse_args(console_args)
+
     # Init aircraft and gate for simulation
     sim = Simulation(
         gate_max_capacity = get_capacity("Gate"), # stdin
@@ -33,7 +36,7 @@ def main():
         )
     
     # # Gather passenger details
-    passenger_data = get_data(console_args) 
+    passenger_data = get_data(file_name) 
     
     # # Let passengers into the airport  
     airport = Airport()

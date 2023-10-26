@@ -2,7 +2,7 @@ import re
 from os import path, listdir
 from sys import argv, exit
 
-def _parse_args(args):
+def parse_args(args):
     """
     Parses command-line arguments and checks if they meet specific criteria.
 
@@ -13,14 +13,13 @@ def _parse_args(args):
         print("Usage: python3 airit.py {filename}")
         exit(-1)
 
-    _file_name = args[1] + ".txt"
-    _file_dir_path = path.join('..', 'data')
+    file_name = args[1] + ".txt"
 
-    if not _file_name in listdir(_file_dir_path):
+    if not file_name in listdir(path.join('..', 'data')):
         print("File not found: {}".format(args[1]))
         exit(-1)
     
-    return _file_name
+    return file_name
 
 def _sanitize(element):
     """
@@ -36,18 +35,16 @@ def _sanitize(element):
         'has_carry_on': has_carry_on
     }
 
-def get_data(args):
+def get_data(file_name):
     """
     Reads and structures passenger data from a file.
 
-    :param args: List of command-line arguments.
+    :param file_name: Name of the file to be read
     :return: A list of dictionaries containing passenger details.
     """
-    _file_name = _parse_args(args)
-    _file_path = path.join('..', 'data', _file_name)
     try:
-        with open(_file_path, 'r') as file:
-            print("Reading passenger data from {}".format(_file_name))
+        with open(path.join('..', 'data', file_name), 'r') as file:
+            print("Reading passenger data from {}".format(file_name))
             _data = [_sanitize(line) for line in file.readlines()]
     except OSError:
         print("Could not open/read file:".format())
