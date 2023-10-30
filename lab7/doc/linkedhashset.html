@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module linkedhashset</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>linkedhashset</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cmjc%5Cpycharmprojects%5Ccsci603%5Clinkedhashtable%5Csource%5Clinkedhashset.py">c:\users\mjc\pycharmprojects\csci603\linkedhashtable\source\linkedhashset.py</a></font></td></tr></table>
+    <p><tt>file:&nbsp;linkedhashset.py<br>
+language:&nbsp;python3<br>
+description:&nbsp;A&nbsp;homemade&nbsp;hash&nbsp;table&nbsp;that&nbsp;remembers&nbsp;insertion&nbsp;order</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="linkedhashset.html#ChainNode">ChainNode</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="collections.abc.html#Iterable">collections.abc.Iterable</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="linkedhashset.html#LinkedHashSet">LinkedHashSet</a>(<a href="set.html#SetType">set.SetType</a>, <a href="collections.abc.html#Iterable">collections.abc.Iterable</a>)
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="set.html#SetType">set.SetType</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="linkedhashset.html#LinkedHashSet">LinkedHashSet</a>(<a href="set.html#SetType">set.SetType</a>, <a href="collections.abc.html#Iterable">collections.abc.Iterable</a>)
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ChainNode">class <strong>ChainNode</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#ChainNode">ChainNode</a>(obj:&nbsp;Any,&nbsp;prev:&nbsp;'<a href="#ChainNode">ChainNode</a>'&nbsp;=&nbsp;None,&nbsp;next:&nbsp;'<a href="#ChainNode">ChainNode</a>'&nbsp;=&nbsp;None,&nbsp;fwd:&nbsp;'<a href="#ChainNode">ChainNode</a>'&nbsp;=&nbsp;None)<br>
+&nbsp;<br>
+A&nbsp;node&nbsp;to&nbsp;hold&nbsp;objects&nbsp;stored&nbsp;in&nbsp;a&nbsp;<a href="#LinkedHashSet">LinkedHashSet</a><br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ChainNode-__init__"><strong>__init__</strong></a>(self, obj: Any, prev: 'ChainNode' = None, next: 'ChainNode' = None, fwd: 'ChainNode' = None)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;node.<br>
+:param&nbsp;obj:&nbsp;the&nbsp;item&nbsp;to&nbsp;stored&nbsp;in&nbsp;the&nbsp;node<br>
+:param&nbsp;prev:&nbsp;the&nbsp;previous&nbsp;node&nbsp;inserted&nbsp;in&nbsp;the&nbsp;set&nbsp;(ordering&nbsp;link)<br>
+:param&nbsp;next:&nbsp;the&nbsp;next&nbsp;node&nbsp;inserted&nbsp;in&nbsp;the&nbsp;set&nbsp;(ordering&nbsp;link)<br>
+:param&nbsp;fwd:&nbsp;the&nbsp;next&nbsp;node&nbsp;in&nbsp;the&nbsp;bucket's&nbsp;chain&nbsp;(hash&nbsp;table&nbsp;link)<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="ChainNode-__repr__"><strong>__repr__</strong></a>(self) -&gt; str</dt><dd><tt>Return&nbsp;a&nbsp;string&nbsp;with&nbsp;the&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;<a href="builtins.html#object">object</a><br>
+in&nbsp;this&nbsp;node&nbsp;and&nbsp;the&nbsp;<a href="builtins.html#object">object</a>&nbsp;of&nbsp;the&nbsp;node&nbsp;to&nbsp;which&nbsp;it&nbsp;is&nbsp;linked&nbsp;by<br>
+the&nbsp;fwd&nbsp;link.<br>
+This&nbsp;function&nbsp;should&nbsp;not&nbsp;be&nbsp;called&nbsp;for&nbsp;a&nbsp;circular<br>
+list.&nbsp;The&nbsp;format&nbsp;of&nbsp;the&nbsp;string&nbsp;is&nbsp;as&nbsp;follows:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{obj1}&nbsp;-&gt;&nbsp;{obj2}&nbsp;-&gt;&nbsp;{obj3}</tt></dd></dl>
+
+<dl><dt><a name="ChainNode-__str__"><strong>__str__</strong></a>(self) -&gt; str</dt><dd><tt>Return&nbsp;the&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;<a href="builtins.html#object">object</a>&nbsp;in&nbsp;this&nbsp;node.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>fwd</strong></dt>
+</dl>
+<dl><dt><strong>next</strong></dt>
+</dl>
+<dl><dt><strong>obj</strong></dt>
+</dl>
+<dl><dt><strong>prev</strong></dt>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="LinkedHashSet">class <strong>LinkedHashSet</strong></a>(<a href="set.html#SetType">set.SetType</a>, <a href="collections.abc.html#Iterable">collections.abc.Iterable</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#LinkedHashSet">LinkedHashSet</a>(initial_num_buckets:&nbsp;int&nbsp;=&nbsp;100,&nbsp;load_limit:&nbsp;float&nbsp;=&nbsp;0.75,&nbsp;hash_function=&amp;lt;built-in&nbsp;function&nbsp;hash&amp;gt;)<br>
+&nbsp;<br>
+A&nbsp;chained&nbsp;hash&nbsp;table&nbsp;that<br>
+(1)&nbsp;Automatically&nbsp;expands&nbsp;and&nbsp;contracts&nbsp;(by&nbsp;a&nbsp;factor&nbsp;of&nbsp;2),&nbsp;and<br>
+(2)&nbsp;Recalls&nbsp;the&nbsp;insertion&nbsp;order&nbsp;of&nbsp;its&nbsp;elements<br>
+Terminology:<br>
+&nbsp;&nbsp;number_of_buckets:&nbsp;the&nbsp;number&nbsp;of&nbsp;buckets/entries/chains&nbsp;in&nbsp;the&nbsp;hash<br>
+&nbsp;&nbsp;&nbsp;&nbsp;table.&nbsp;It&nbsp;determines&nbsp;the&nbsp;range&nbsp;of&nbsp;legal&nbsp;table&nbsp;indices&nbsp;in&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;implementation.&nbsp;It&nbsp;changes&nbsp;during&nbsp;resizing.<br>
+&nbsp;&nbsp;size:&nbsp;the&nbsp;number&nbsp;of&nbsp;elements&nbsp;the&nbsp;client&nbsp;has&nbsp;added,&nbsp;and&nbsp;not&nbsp;yet<br>
+&nbsp;&nbsp;&nbsp;&nbsp;removed,&nbsp;from&nbsp;the&nbsp;set<br>
+&nbsp;&nbsp;load_factor:&nbsp;ratio&nbsp;of&nbsp;size&nbsp;to&nbsp;number_of_buckets<br>
+&nbsp;&nbsp;load_limit:&nbsp;specifies&nbsp;a&nbsp;range&nbsp;outside&nbsp;of&nbsp;which&nbsp;the&nbsp;table&nbsp;is&nbsp;too<br>
+&nbsp;&nbsp;&nbsp;&nbsp;full&nbsp;or&nbsp;empty.&nbsp;When&nbsp;load_factor&nbsp;reaches&nbsp;load_limit,&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;number_of_buckets&nbsp;is&nbsp;doubled.&nbsp;When&nbsp;it&nbsp;gets&nbsp;under&nbsp;(1-load_limit),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;number_of_buckets&nbsp;is&nbsp;cut&nbsp;in&nbsp;half.<br>
+Notes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;No&nbsp;hash&nbsp;table&nbsp;with&nbsp;a&nbsp;number&nbsp;of&nbsp;buckets&nbsp;less&nbsp;than&nbsp;MIN_BUCKETS<br>
+&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;ever&nbsp;created,&nbsp;regardless&nbsp;of&nbsp;other&nbsp;parts&nbsp;of&nbsp;this specification.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;a&nbsp;hash-based&nbsp;set,&nbsp;not&nbsp;map,&nbsp;so&nbsp;there&nbsp;are&nbsp;only&nbsp;keys,&nbsp;not&nbsp;values.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="linkedhashset.html#LinkedHashSet">LinkedHashSet</a></dd>
+<dd><a href="set.html#SetType">set.SetType</a></dd>
+<dd><a href="collections.abc.html#Iterable">collections.abc.Iterable</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="LinkedHashSet-__init__"><strong>__init__</strong></a>(self, initial_num_buckets: int = 100, load_limit: float = 0.75, hash_function=&lt;built-in function hash&gt;)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;empty&nbsp;set.<br>
+To&nbsp;initialize&nbsp;the&nbsp;instance&nbsp;field&nbsp;'size'&nbsp;inherited&nbsp;from&nbsp;the&nbsp;<a href="set.html#SetType">SetType</a>&nbsp;class.&nbsp;You&nbsp;must&nbsp;called<br>
+the&nbsp;super's&nbsp;constructor&nbsp;like&nbsp;this:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;super().<a href="#LinkedHashSet-__init__">__init__</a>()<br>
+&nbsp;<br>
+Remember&nbsp;that&nbsp;the&nbsp;call&nbsp;to&nbsp;the&nbsp;super's&nbsp;constructor&nbsp;must&nbsp;be&nbsp;the&nbsp;first&nbsp;statement&nbsp;in&nbsp;the&nbsp;constructor,&nbsp;before<br>
+initializing&nbsp;anything&nbsp;else.<br>
+&nbsp;<br>
+:param&nbsp;initial_num_buckets:&nbsp;starting&nbsp;number_of_buckets<br>
+:param&nbsp;load_limit:&nbsp;See&nbsp;class&nbsp;documentation&nbsp;above<br>
+:param&nbsp;hash_function:&nbsp;The&nbsp;hash&nbsp;function&nbsp;to&nbsp;use&nbsp;in&nbsp;this&nbsp;hash&nbsp;table.&nbsp;By&nbsp;default,&nbsp;it&nbsp;will<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;built-in&nbsp;hash&nbsp;function.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LinkedHashSet-__iter__"><strong>__iter__</strong></a>(self)</dt><dd><tt>Build&nbsp;an&nbsp;iterator.<br>
+:return:&nbsp;an&nbsp;iterator&nbsp;for&nbsp;the&nbsp;current&nbsp;elements&nbsp;in&nbsp;the&nbsp;set</tt></dd></dl>
+
+<dl><dt><a name="LinkedHashSet-__len__"><strong>__len__</strong></a>(self) -&gt; int</dt><dd><tt>Return&nbsp;the&nbsp;number&nbsp;of&nbsp;elements&nbsp;in&nbsp;this&nbsp;set.<br>
+:return:&nbsp;the&nbsp;number&nbsp;of&nbsp;elements&nbsp;in&nbsp;the&nbsp;set.</tt></dd></dl>
+
+<dl><dt><a name="LinkedHashSet-__repr__"><strong>__repr__</strong></a>(self) -&gt; str</dt><dd><tt>Return&nbsp;a&nbsp;string&nbsp;with&nbsp;the&nbsp;content&nbsp;of&nbsp;the&nbsp;hash&nbsp;table&nbsp;and&nbsp;information&nbsp;about&nbsp;the&nbsp;hash&nbsp;table&nbsp;such&nbsp;as<br>
+the&nbsp;table's&nbsp;capacity,&nbsp;size,&nbsp;current&nbsp;load&nbsp;factor&nbsp;and&nbsp;load&nbsp;limit.<br>
+&nbsp;<br>
+Example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;theSet&nbsp;=&nbsp;<a href="#LinkedHashSet">LinkedHashSet</a>(initial_num_buckets=10)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;theSet.<a href="#LinkedHashSet-add">add</a>('to')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;theSet.<a href="#LinkedHashSet-add">add</a>('do')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;theSet.<a href="#LinkedHashSet-add">add</a>('is')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;theSet.<a href="#LinkedHashSet-add">add</a>('to')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;theSet.<a href="#LinkedHashSet-add">add</a>('be')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;print(repr(theSet))<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;String generated<br>
+&nbsp;&nbsp;&nbsp;&nbsp;----------------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Capacity:&nbsp;10,&nbsp;Size:&nbsp;4,&nbsp;Load&nbsp;Factor:&nbsp;0.4,&nbsp;Load&nbsp;Limit:&nbsp;0.75<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hash&nbsp;table<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;----------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3:&nbsp;'is'&nbsp;-&gt;&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6:&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7:&nbsp;'do'&nbsp;-&gt;&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8:&nbsp;'to'&nbsp;-&gt;&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9:&nbsp;'be'&nbsp;-&gt;&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="LinkedHashSet-__str__"><strong>__str__</strong></a>(self) -&gt; str</dt><dd><tt>Return&nbsp;a&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;objects&nbsp;added&nbsp;to&nbsp;this&nbsp;set&nbsp;sorted&nbsp;by&nbsp;insertion&nbsp;order.<br>
+The&nbsp;string&nbsp;will&nbsp;contain&nbsp;all&nbsp;the&nbsp;objects&nbsp;separated&nbsp;by&nbsp;comma&nbsp;and&nbsp;enclosed&nbsp;between&nbsp;curly&nbsp;braces.<br>
+Example:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"{obj1,&nbsp;obj2,&nbsp;obj3,&nbsp;...}"</tt></dd></dl>
+
+<dl><dt><a name="LinkedHashSet-add"><strong>add</strong></a>(self, obj) -&gt; bool</dt><dd><tt>Insert&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>&nbsp;into&nbsp;the&nbsp;hash&nbsp;table&nbsp;and&nbsp;remember&nbsp;when&nbsp;it&nbsp;was&nbsp;added<br>
+relative&nbsp;to&nbsp;other&nbsp;calls&nbsp;to&nbsp;this&nbsp;method.&nbsp;However,&nbsp;if&nbsp;the&nbsp;<a href="builtins.html#object">object</a>&nbsp;is<br>
+added&nbsp;multiple&nbsp;times,&nbsp;the&nbsp;hash&nbsp;table&nbsp;is&nbsp;left&nbsp;unchanged,&nbsp;including&nbsp;the<br>
+fact&nbsp;that&nbsp;this&nbsp;<a href="builtins.html#object">object</a>'s&nbsp;location&nbsp;in&nbsp;the&nbsp;insertion&nbsp;order&nbsp;does&nbsp;not&nbsp;change.<br>
+Double&nbsp;the&nbsp;size&nbsp;of&nbsp;the&nbsp;table&nbsp;if&nbsp;its&nbsp;load_factor&nbsp;exceeds&nbsp;the&nbsp;load_limit.<br>
+:param&nbsp;obj:&nbsp;the&nbsp;<a href="builtins.html#object">object</a>&nbsp;to&nbsp;add<br>
+:return:&nbsp;True&nbsp;iff&nbsp;obj&nbsp;has&nbsp;been&nbsp;added&nbsp;to&nbsp;this&nbsp;set</tt></dd></dl>
+
+<dl><dt><a name="LinkedHashSet-contains"><strong>contains</strong></a>(self, obj) -&gt; bool</dt><dd><tt>Is&nbsp;the&nbsp;given&nbsp;obj&nbsp;in&nbsp;the&nbsp;set?<br>
+:return:&nbsp;True&nbsp;iff&nbsp;obj&nbsp;or&nbsp;its&nbsp;equivalent&nbsp;has&nbsp;been&nbsp;added&nbsp;to&nbsp;this&nbsp;set</tt></dd></dl>
+
+<dl><dt><a name="LinkedHashSet-remove"><strong>remove</strong></a>(self, obj) -&gt; bool</dt><dd><tt>Remove&nbsp;an&nbsp;<a href="builtins.html#object">object</a>&nbsp;from&nbsp;the&nbsp;hash&nbsp;table&nbsp;(and&nbsp;from&nbsp;the&nbsp;insertion&nbsp;order).<br>
+Resize&nbsp;the&nbsp;table&nbsp;if&nbsp;its load_factor&nbsp;has&nbsp;dropped&nbsp;below (1-load_limit).<br>
+:param&nbsp;obj:&nbsp;the&nbsp;value&nbsp;to&nbsp;remove;&nbsp;assumes&nbsp;hashing&nbsp;and&nbsp;equality&nbsp;work<br>
+:return:&nbsp;True&nbsp;iff&nbsp;the&nbsp;obj&nbsp;has&nbsp;been&nbsp;remove&nbsp;from&nbsp;this&nbsp;set</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>LOAD_LIMIT</strong></dt>
+</dl>
+<dl><dt><strong>back</strong></dt>
+</dl>
+<dl><dt><strong>front</strong></dt>
+</dl>
+<dl><dt><strong>hash_function</strong></dt>
+</dl>
+<dl><dt><strong>table</strong></dt>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>MIN_BUCKETS</strong> = 10</dl>
+
+<hr>
+Data descriptors inherited from <a href="set.html#SetType">set.SetType</a>:<br>
+<dl><dt><strong>size</strong></dt>
+</dl>
+<hr>
+Class methods inherited from <a href="collections.abc.html#Iterable">collections.abc.Iterable</a>:<br>
+<dl><dt><a name="LinkedHashSet-__class_getitem__"><strong>__class_getitem__</strong></a> = GenericAlias(...)<font color="#909090"><font face="helvetica, arial"> from <a href="abc.html#ABCMeta">abc.ABCMeta</a></font></font></dt><dd><tt>Represent&nbsp;a&nbsp;<a href="http://www.python.org/dev/peps/pep-0585/">PEP&nbsp;585</a>&nbsp;generic&nbsp;type<br>
+&nbsp;<br>
+E.g.&nbsp;for&nbsp;t&nbsp;=&nbsp;list[int],&nbsp;t.origin&nbsp;is&nbsp;list&nbsp;and&nbsp;t.args&nbsp;is&nbsp;(int,).</tt></dd></dl>
+
+<dl><dt><a name="LinkedHashSet-__subclasshook__"><strong>__subclasshook__</strong></a>(C)<font color="#909090"><font face="helvetica, arial"> from <a href="abc.html#ABCMeta">abc.ABCMeta</a></font></font></dt><dd><tt>Abstract&nbsp;classes&nbsp;can&nbsp;override&nbsp;this&nbsp;to&nbsp;customize&nbsp;issubclass().<br>
+&nbsp;<br>
+This&nbsp;is&nbsp;invoked&nbsp;early&nbsp;on&nbsp;by&nbsp;abc.ABCMeta.__subclasscheck__().<br>
+It&nbsp;should&nbsp;return&nbsp;True,&nbsp;False&nbsp;or&nbsp;NotImplemented.&nbsp;&nbsp;If&nbsp;it&nbsp;returns<br>
+NotImplemented,&nbsp;the&nbsp;normal&nbsp;algorithm&nbsp;is&nbsp;used.&nbsp;&nbsp;Otherwise,&nbsp;it<br>
+overrides&nbsp;the&nbsp;normal&nbsp;algorithm&nbsp;(and&nbsp;the&nbsp;outcome&nbsp;is&nbsp;cached).</tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>Any</strong> = typing.Any</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#7799ee">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#7799ee"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">CS&nbsp;RIT</td></tr></table>
+</body></html>
