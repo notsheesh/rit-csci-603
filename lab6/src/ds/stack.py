@@ -45,9 +45,10 @@ class Stack:
             return new_node
 
         if not self.is_empty():
-            # before: tos -> third -> second -> first 
+            # before: tos -> second -> first 
             new_node.set_link(self.tos) # new_node -> tos == third
-            self.tos = new_node # tos -> new_node -> third -> second -> first
+            # after: tos -> new_node -> third -> second -> first
+            self.tos = new_node 
             return new_node
     
     def pop(self):
