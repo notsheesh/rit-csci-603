@@ -1,3 +1,12 @@
+"""
+Utility Functions for Image Viewer
+
+This module provides utility functions used in the image viewer application. 
+The functions include checks for numbers being powers of two or perfect squares,
+validations for pixel values, and command-line argument parsing.
+
+Author: Shreesh Tripathi, st4083
+"""
 import tkinter as tk
 import sys, os, math, re
 
