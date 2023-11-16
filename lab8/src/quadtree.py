@@ -1,6 +1,7 @@
 from qtnode import QTNode
 import math
 from utils import *
+from qtexception import QTException
 
 class QuadTree:
     __slots__ = ('root', 
@@ -61,19 +62,26 @@ class QuadTree:
                 img_arr.append(self.img[i][j])
         return img_arr
     
-    def compressed_data_str(self):
+    def compressed_data_str(self, trunc = False):
         result = ""
         data_len = len(self.compressed_data)
 
-        if data_len < 15:
+        if trunc: 
+
+            if data_len < 15:
+                for x in self.compressed_data:
+                    result += f"{x} "
+
+            else:
+                for i in range(10):
+                    result += f"{self.compressed_data[i]} "
+                result += "... "
+                result += "(truncated for brevity)"
+        
+        else: 
+                
             for x in self.compressed_data:
                 result += f"{x} "
-
-        else:
-            for i in range(10):
-                result += f"{self.compressed_data[i]} "
-            result += "... "
-            result += "(truncated for brevity)"
         
         return result
     
@@ -185,15 +193,32 @@ class QuadTree:
 
         try: 
             with open(filepath, 'r') as file:
+                flag = False 
                 for line in file:
-                    data.append(int(line.strip()))
+                    value = line.strip()
+                    
+                    # error handling
+                    if flag and not is_integer(value): 
+                        raise QTException(f"Pixel value [{value}] is not an integer")
+                    
+                    if flag and not is_valid_pixel(int(value)): 
+                        raise QTException(f"Pixel value [{value}] is not in the range [0, 255]")
+
+                    flag = True
+
+                    data.append(int(value))
 
         except FileNotFoundError:
-            print("File not found.")
+            print("File not found")
             error_state()
 
+        except QTException as qte:
+            print(f"QTException: {qte}")
+            sys.exit(1)
+
         except Exception as e:
-            print(f"Error occurred: {e}")
+            print(f"Error occured: {e}")
+            sys.exit(1)
 
         # sanity check 
         if self.meta['mode'] == "compressed":
@@ -213,18 +238,32 @@ class QuadTree:
         self.meta['height'] = self.height
         self.img = self.init_img_arr()
 
+        # error handling
+        try:
+            if not is_power_of_two(self.total_px):
+                raise QTException("Image size isn't a power of 2")
+    
+            if not is_square(self.total_px):
+                raise QTException("Image size isn't a square")
+            
+        except QTException as qte:
+            print(f"QTException: {qte}")
+            sys.exit(1)
+
         return data
 
     def display_image(self):
         window = tk.Tk()
         window.title(self.meta['title'])
         photo = tk.PhotoImage(width=self.row_px, height=self.row_px)
+        
         for i in range(self.row_px):
             for j in range(self.row_px):
                 color_val = self.img[i][j]
                 color = "#{:02x}{:02x}{:02x}".format(
                     color_val, color_val, color_val)
                 photo.put(color, (j, i))  
+                
         canvas = tk.Canvas(window, width=self.row_px, height=self.row_px)
         canvas.pack()
         canvas.create_image(0, 0, anchor=tk.NW, image=photo)

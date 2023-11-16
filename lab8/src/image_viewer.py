@@ -13,7 +13,13 @@ def decompress_image(meta):
     qt.root = qt.build_empty_tree(qt.height)
 
     print(f"Uncompressing: {meta['filename']}")
-    print(f"Quadtree: {qt.compressed_data_str()}")
+    print(f"Quadtree: {qt.compressed_data_str(trunc=True)}")
+
+    option = input("Do you want to see the whole array? (y/n): ")
+    if option == "y":
+        print(f"Quadtree: {qt.compressed_data_str(trunc=False)}")
+    else:
+        pass
 
     # decompress
     qt.decompress(qt.root, qt.compressed_data)
