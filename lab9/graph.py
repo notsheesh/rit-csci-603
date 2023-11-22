@@ -57,5 +57,14 @@ def test():
 
     print(f"\nStates: {northeast.get_vertices()}")
 
+    print()
+
+    print(f"'MA' in northeast (True)?: {'MA' in northeast}")
+    print(f"'ZE' in northeast (False)?: {'ZE' in northeast}")
+
+    print()
+
+    print(f"'MA' Vertex: {northeast.get_vertex('MA')}")
+
 if __name__ == "__main__":
     test()
