@@ -1,0 +1,10 @@
+cow Spot 2 6
+paintball GOLD 8 5 1
+cow Spots 10 2
+paintball SILVER 4 4 3
+paintball BRONZE 12 3 3
+cow Patch 8 4
+cow Blackie 6 3
+paintball INDIGO 6 5 2
+paintball VIOLET 9 8 1
+cow Moo 5 7
