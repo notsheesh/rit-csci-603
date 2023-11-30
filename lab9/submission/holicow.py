@@ -18,6 +18,7 @@ Author: Shreesh Tripathi, st4083
 """
 
 from simulation import Simulation
+import sys
 
 def main():
     """
@@ -27,8 +28,13 @@ def main():
     """
     # setup
     sim = Simulation()
-    sim.setup()
+
+    if not sim.setup():
+        print("Terminating...")
+        print("----------------------------------------------------")
+        return
     
+
     # pretty 
     print("Field of Dreams")
     print(sim.field)

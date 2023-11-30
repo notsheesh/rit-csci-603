@@ -1,0 +1,4 @@
+paintball RED 1 1 2
+paintball BLUE 2 2 2
+paintball GREEN 3 3 2
+paintball YELLOW 4 4 2

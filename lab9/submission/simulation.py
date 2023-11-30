@@ -48,7 +48,28 @@ class Simulation:
         
         filename = sys.argv[1]
         self.cows, self.balls = self.read_file(filename)
-        self.field = self.setup_field()
+        self.field = self.setup_field() 
+
+        # print(len(self.cows), len(self.balls))
+
+        if len(self.cows) == 0 and len(self.balls) == 0: # tc5
+            print("No paintballs or cows found on the field")
+            sys.exit(1)
+
+        if len(self.balls) == 0: # tc6
+            print("No paintballs found on the field")
+            sys.exit(1)
+        
+        if len(self.cows) == 0: # tc7
+            print("[ALERT] No cows were found on the field.")
+            yn = input("Do you still wish to simulate? (y/n): ")
+            if yn == "n":
+                return False
+            print("----------------------------------------------------")
+        
+        return True
+
+    
 
     def read_file(self, filename):
         """
