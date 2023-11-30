@@ -1,0 +1,8 @@
+paintball RED 10.1 10.2 1.5
+cow Roo 11.1 11.2
+paintball BLUE 20.3 20.2 2.3
+cow Boo 21.3 21.3
+paintball GREEN 30.5 30.3 1.7
+cow Glee 31.2 31.1
+paintball YELLOW 40.2 40.4 2.4
+cow Yuhu 40.3 40.2
