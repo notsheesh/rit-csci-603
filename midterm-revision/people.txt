@@ -1,3 +1,0 @@
-name, num1, num2
-alice, 12, 999
-sameer, 11, 322
